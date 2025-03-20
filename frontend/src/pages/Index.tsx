@@ -27,9 +27,9 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="animated-border p-6">
               <img 
-                src="https://images.unsplash.com/photo-1585565266865-42ab13b0fc8a?q=80&w=2070&auto=format&fit=crop" 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx6IX1qermL3Bx94GVcVFgrtNVeVRdXPrJAQ&s" 
                 alt="Traditional Indian Art" 
-                className="rounded-lg shadow-lg"
+                className="rounded-lg shadow-lg w-full h-[400px] object-cover"
               />
             </div>
             <div className="space-y-6">
@@ -70,7 +70,7 @@ const Index = () => {
             <div className="cultural-card animate-scaleIn" style={{ animationDelay: '0.1s' }}>
               <div className="relative overflow-hidden aspect-[5/3] rounded-t-xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1551711034-d8cb636e5e80?q=80&w=1993&auto=format&fit=crop" 
+                  src="https://dims.apnews.com/dims4/default/a563f6c/2147483647/strip/false/crop/4500x3001+0+0/resize/1486x991!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F8f%2F90%2F7895d6e91470dba7c6ccb2d5a4da%2F5a9cb53123a84899a0f3b7a9dc9cc2a5" 
                   alt="Holi Festival" 
                   className="w-full h-full object-cover"
                 />
@@ -91,7 +91,7 @@ const Index = () => {
             <div className="cultural-card animate-scaleIn" style={{ animationDelay: '0.2s' }}>
               <div className="relative overflow-hidden aspect-[5/3] rounded-t-xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1636997645260-9f18aa5aee4d?q=80&w=1974&auto=format&fit=crop" 
+                  src="https://cdn.dnaindia.com/sites/default/files/styles/full/public/2021/11/04/1003926-diwali-ani.jpg" 
                   alt="Diwali Festival" 
                   className="w-full h-full object-cover"
                 />
@@ -112,7 +112,7 @@ const Index = () => {
             <div className="cultural-card animate-scaleIn" style={{ animationDelay: '0.3s' }}>
               <div className="relative overflow-hidden aspect-[5/3] rounded-t-xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1592302810036-e728006fdcc3?q=80&w=1970&auto=format&fit=crop" 
+                  src="https://theholidaysdestination.com/wp-content/uploads/2022/02/Onam-Festival.jpg" 
                   alt="Onam Festival" 
                   className="w-full h-full object-cover"
                 />

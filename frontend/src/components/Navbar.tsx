@@ -124,7 +124,7 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link to="/#explore">
+              <Link to="/">
                 <Button variant="outline" className="gap-2">
                   Sign In
                 </Button>

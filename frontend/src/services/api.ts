@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { featuredItems } from '@/components/FeaturedSection';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -58,6 +59,16 @@ export interface UserProfile {
 
 export interface Event {
   id: string;
+  _id?: string; // MongoDB ID from backend
+  name: string;
+  date: string;
+  location: string;
+  description: string;
+  category: string;
+  createdBy?: string;
+}
+
+export interface NewEvent {
   name: string;
   date: string;
   location: string;
@@ -115,6 +126,40 @@ export const dashboardService = {
     return response.data;
   },
 
+  getEventById: async (eventId: string) => {
+    const response = await api.get(`/user/events/${eventId}`);
+    return response.data;
+  },
+
+  createEvent: async (eventData: NewEvent) => {
+    const response = await api.post('/user/events', eventData);
+    return response.data;
+  },
+
+  updateEvent: async (eventId: string, eventData: Partial<NewEvent>) => {
+    console.log('Sending update request for event ID:', eventId, 'with data:', eventData);
+    try {
+      const response = await api.put(`/user/events/${eventId}`, eventData);
+      console.log('Update response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('API error updating event:', error);
+      throw error;
+    }
+  },
+
+  deleteEvent: async (eventId: string) => {
+    console.log('Sending delete request for event ID:', eventId);
+    try {
+      const response = await api.delete(`/user/events/${eventId}`);
+      console.log('Delete response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('API error deleting event:', error);
+      throw error;
+    }
+  },
+
   getRecentActivities: async () => {
     const response = await api.get('/user/activities');
     return response.data;
@@ -134,4 +179,43 @@ export const dashboardService = {
     const response = await api.get('/user/bookmarks');
     return response.data;
   },
+};
+
+// Heritage service for cultural items
+export const heritageService = {
+  // Get featured items
+  getFeaturedItems: async () => {
+    // This would fetch from an API in a real app
+    // For now we're using the local data
+    return featuredItems;
+  },
+  
+  // Get item details by ID
+  getItemById: async (itemId: string) => {
+    // This would be an API call in a real implementation
+    const item = featuredItems.find(item => item.title === itemId);
+    return item;
+  },
+  
+  // Get bookmarked items with details
+  getBookmarkedItems: async () => {
+    try {
+      // Get user's bookmarks
+      const bookmarkIds = await dashboardService.getBookmarks();
+      
+      // Get details for each bookmark
+      const bookmarkedItems = [];
+      for (const id of bookmarkIds) {
+        const item = await heritageService.getItemById(id);
+        if (item) {
+          bookmarkedItems.push(item);
+        }
+      }
+      
+      return bookmarkedItems;
+    } catch (error) {
+      console.error('Error fetching bookmarked items:', error);
+      throw error;
+    }
+  }
 }; 

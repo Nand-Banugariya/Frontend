@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CulturalCard from './CulturalCard';
 import { Button } from '@/components/ui/button';
@@ -8,11 +8,11 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-import { UserPlus, LogIn, BookmarkPlus, Share2 } from 'lucide-react';
-import { authService } from '@/services/api';
+import { UserPlus, LogIn, BookmarkPlus, Share2, BookmarkCheck } from 'lucide-react';
+import { authService, dashboardService } from '@/services/api';
 import { toast } from 'sonner';
 
-const categories = [
+export const categories = [
   'All',
   'Art & Craft',
   'Festivals',
@@ -21,12 +21,21 @@ const categories = [
   'History'
 ];
 
-const featuredItems = [
+export interface HeritageItem {
+  id: number;
+  title: string;
+  description: string;
+  imageSrc: string;
+  category: string;
+  href: string;
+}
+
+export const featuredItems: HeritageItem[] = [
   {
     id: 1,
     title: 'The Art of Madhubani',
     description: 'Explore the intricate patterns and vibrant colors of Madhubani painting, a traditional art form from Bihar.',
-    imageSrc: 'https://images.unsplash.com/photo-1590214074323-fd5649874bee?q=80&w=1964&auto=format&fit=crop',
+    imageSrc: 'https://d35l77wxi0xou3.cloudfront.net/opencart/image/productFromFeb2020/Traditional%20Madhubani%20Painting1615964610-600x600.jpg',
     category: 'Art & Craft',
     href: '#art'
   },
@@ -34,7 +43,7 @@ const featuredItems = [
     id: 2,
     title: 'Festival of Lights: Diwali',
     description: 'Discover the meaning behind the traditions and celebrations of India\'s most luminous festival.',
-    imageSrc: 'https://images.unsplash.com/photo-1605369572399-05d8d64a0f6e?q=80&w=2070&auto=format&fit=crop',
+    imageSrc: 'https://cdn.dnaindia.com/sites/default/files/styles/full/public/2021/11/04/1003926-diwali-ani.jpg',
     category: 'Festivals',
     href: '#festivals'
   },
@@ -50,7 +59,7 @@ const featuredItems = [
     id: 4,
     title: 'Classical Bharatanatyam',
     description: 'Learn about one of India\'s oldest classical dance forms, known for its grace, expression, and spirituality.',
-    imageSrc: 'https://images.unsplash.com/photo-1503612061115-ef40ed808997?q=80&w=1964&auto=format&fit=crop',
+    imageSrc: 'https://karnatakatourism.org/wp-content/uploads/2020/05/Dane.jpg',
     category: 'Music & Dance',
     href: '#music'
   },
@@ -69,41 +78,200 @@ const featuredItems = [
     imageSrc: "https://t4.ftcdn.net/jpg/04/08/25/05/360_F_408250543_MVaEVGeWxb4FiFy7mEGKj8nfYkwoAZON.jpg?q=80&w=2070&auto=format&fit=crop",
     category: "History",
     href: "#history"
-},
-{
+  },
+  {
     id: 7,
     title: "The Magnificent Meenakshi Temple",
     description: "Explore the stunning Meenakshi Temple in Madurai, dedicated to Goddess Parvati. Admire its intricate carvings, towering gopurams, and the rich cultural heritage of Tamil Nadu.",
     imageSrc: "https://media.tacdn.com/media/attractions-splice-spp-674x446/13/cd/65/14.jpg?q=80&w=1932&auto=format&fit=crop",
     category: "History",
     href: "#history"
-},
-{
+  },
+  {
     id: 8,
     title: "The Temples of Khajuraho",
     description: "Marvel at the exquisite temples of Khajuraho, renowned for their erotic sculptures and intricate artistry. Learn about their historical and cultural significance.",
     imageSrc: "https://t4.ftcdn.net/jpg/02/85/43/37/360_F_285433744_iUcC83UYSfOuJjtXIiWiUbjWezGWlTbJ.jpg?q=80&w=1978&auto=format&fit=crop",
     category: "History",
     href: "#history"
-},
-
-{
+  },
+  {
     id: 9,
     title: "The Jagannath Temple of Puri",
     "description": "Visit the iconic Jagannath Temple in Puri, Odisha. Learn about its history, the annual Rath Yatra festival, and its significance in Hindu culture.",
     imageSrc: "https://i.pinimg.com/736x/a9/20/0d/a9200d2079ff66d583f09d59263feeb8.jpg?q=80&w=1932&auto=format&fit=crop",
     category: "History",
     href: "#history"
-},
+  },
   {
     id: 10,
     title: 'Warli Folk Painting',
     description: 'Discover the simple yet profound tribal art form that uses basic geometric shapes to depict daily life.',
-    imageSrc: 'https://images.unsplash.com/photo-1623053789916-0ba4c36987a3?q=80&w=1974&auto=format&fit=crop',
+    imageSrc: 'https://www.aprearthouse.com/cdn/shop/articles/sagar-yende-and-prof.-ravi-poovaiah-idc-iit-bombay-2-1702462104540_1200x-1703152291702.jpg?v=1703152300',
     category: 'Art & Craft',
     href: '#art'
   },
+  // Additional entries for each category
+  // Art & Craft
+  {
+    id: 11,
+    title: 'Phad Painting of Rajasthan',
+    description: 'Immerse yourself in the storytelling art of Phad, which depicts epic narratives on scrolls.',
+    imageSrc: 'https://5.imimg.com/data5/KE/XP/MY-8086796/phad-painting-500x500.jpg',
+    category: 'Art & Craft',
+    href: '#art'
+  },
+  {
+    id: 12,
+    title: 'Patachitra of Odisha',
+    description: 'Explore the ancient art of Patachitra, known for its intricate details and mythological themes.',
+    imageSrc: 'https://umaid.art/wp-content/uploads/2022/08/pattachitra-6.jpg',
+    category: 'Art & Craft',
+    href: '#art'
+  },
+  {
+    id: 13,
+    title: 'Kalamkari Art',
+    description: 'Discover the elegant hand-painted and block-printed textiles from Andhra Pradesh.',
+    imageSrc: 'https://kotart.in/cdn/shop/files/CanvasAS68719.jpg?v=1721717182',
+    category: 'Art & Craft',
+    href: '#art'
+  },
+  {
+    id: 14,
+    title: 'Tanjore Painting',
+    description: 'Experience the richness of Tanjore paintings, famous for their surface richness and compact composition.',
+    imageSrc: 'https://img1.wsimg.com/isteam/ip/bd95d888-15fd-4e22-9514-3b3e7856faa7/d1fc0d4d-12eb-4019-a7aa-f00566d84891.jpg',
+    category: 'Art & Craft',
+    href: '#art'
+  },
+  // Festivals
+  {
+    id: 15,
+    title: 'Holi: Festival of Colors',
+    description: 'Celebrate the vibrant festival of Holi, marking the arrival of spring and the triumph of good over evil.',
+    imageSrc: 'https://dims.apnews.com/dims4/default/a563f6c/2147483647/strip/false/crop/4500x3001+0+0/resize/1486x991!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F8f%2F90%2F7895d6e91470dba7c6ccb2d5a4da%2F5a9cb53123a84899a0f3b7a9dc9cc2a5',
+    category: 'Festivals',
+    href: '#festivals'
+  },
+  {
+    id: 16,
+    title: 'Onam: Harvest Festival of Kerala',
+    description: 'Learn about Onam, a ten-day festival celebrated with grand feasts, boat races, and traditional dances.',
+    imageSrc: 'https://theholidaysdestination.com/wp-content/uploads/2022/02/Onam-Festival.jpg',
+    category: 'Festivals',
+    href: '#festivals'
+  },
+  {
+    id: 17,
+    title: 'Durga Puja: Worship of the Goddess',
+    description: 'Experience the grandeur of Durga Puja, a festival honoring the victory of Goddess Durga over Mahishasura.',
+    imageSrc: 'https://media.istockphoto.com/id/1590058545/photo/hindu-priests-worshipping-goddess-durga-with-panchapradip-chamor-and-fan-ashtami-puja-aarati.jpg?s=612x612&w=0&k=20&c=d-8gW0ofLZdSnqkLBc1yFPv8mdeS3mZsT3koLt8hKY8=',
+    category: 'Festivals',
+    href: '#festivals'
+  },
+  {
+    id: 18,
+    title: 'Pongal: A Tamil Harvest Festival',
+    description: 'Celebrate Pongal, a four-day harvest festival in Tamil Nadu, with traditional rituals and delicacies.',
+    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjH3ceEKp1r-BPtcRfl_wd0iD_S3WerC7WbA&s',
+    category: 'Festivals',
+    href: '#festivals'
+  },
+  // Cuisine
+  {
+    id: 19,
+    title: 'The Spices of Chettinad',
+    description: 'Explore the fiery and aromatic cuisine of Chettinad, known for its unique spice blends and flavors.',
+    imageSrc: 'https://images.deccanherald.com/deccanherald%2F2024-06%2Fa4b3d8c2-4fb7-4103-8705-7997fee11d02%2Ffile7e1dqonxlc1bkn572br.jpg?auto=format%2Ccompress&fmt=webp&fit=max&format=webp&q=70&w=400&dpr=2',
+    category: 'Cuisine',
+    href: '#cuisine'
+  },
+  {
+    id: 20,
+    title: 'Bengali Sweets: A Taste of Tradition',
+    description: 'Discover the world of Bengali sweets, from the luscious rasgulla to the creamy sandesh.',
+    imageSrc: 'https://images.slurrp.com/webstories/wp-content/uploads/2023/10/13181917/cropped-daedf303b07fdfb45b1d6f221736182d-640x853.jpg',
+    category: 'Cuisine',
+    href: '#cuisine'
+  },
+  {
+    id: 21,
+    title: 'Awadhi Cuisine: Royal Flavors',
+    description: 'Delve into the rich and royal flavors of Awadhi cuisine, famous for its biryanis and kebabs.',
+    imageSrc: 'https://restaurantindia.s3.ap-south-1.amazonaws.com/s3fs-public/content6099.jpg',
+    category: 'Cuisine',
+    href: '#cuisine'
+  },
+ 
+  // Music & Dance
+  {
+    id: 23,
+    title: 'Kathak: The Dance of Storytellers',
+    description: 'Learn about Kathak, a classical dance form known for its intricate footwork and expressive gestures.',
+    imageSrc: 'https://www.hercircle.in/hcm/EngageImage/5F0D2024-9AB9-41B4-A03A-24D43C9A7E1A/D/CD3A279E-915B-4DBA-9FED-CAFA0DD4C469.jpg',
+    category: 'Music & Dance',
+    href: '#music'
+  },
+  {
+    id: 24,
+    title: 'The Rhythms of Bhangra',
+    description: 'Feel the energetic beats of Bhangra, a lively folk dance from Punjab.',
+    imageSrc: 'https://covers.stocktune.com/public/1/f/0/1f0d88a0-d5a8-4004-b758-90bad44d418d_large/vibrant-punjab-dance-beats-stocktune.jpg',
+    category: 'Music & Dance',
+    href: '#music'
+  },
+  {
+    id: 25,
+    title: 'Sitar: The Sound of India',
+    description: 'Discover the melodious tunes of the sitar, an iconic string instrument in Indian classical music.',
+    imageSrc: 'https://rvb-img.reverb.com/image/upload/s--3hD6kFeh--/a_0/f_auto,t_large/v1665998603/axnkzbpamc3qi3ynvxai.jpg',
+    category: 'Music & Dance',
+    href: '#music'
+  },
+  {
+    id: 26,
+    title: 'Odissi: Dance of the Divine',
+    description: 'Explore Odissi, one of the oldest surviving dance forms, known for its grace and spiritual expression.',
+    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTw5PJToMKKrp87JDUJpxh1mP6AtgrHlO9tw&s',
+    category: 'Music & Dance',
+    href: '#music'
+  },
+  // History
+  {
+    id: 27,
+    title: 'The Red Fort of Delhi',
+    description: 'Uncover the history of the Red Fort, a symbol of India\'s rich past and architectural brilliance.',
+    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfbqyPvAW9u0__Y4PcmaTO8LbNjkNL6RyRFg&s',
+    category: 'History',
+    href: '#history'
+  },
+  {
+    id: 28,
+    title: 'Hampi: The Ancient City',
+    description: 'Visit the ruins of Hampi, a UNESCO World Heritage site that was once a prosperous kingdom.',
+    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPGB4fpVJodjvSVQZ6_ZUDLbp1HqF5l1sbPw&s',
+    category: 'History',
+    href: '#history'
+  },
+  {
+    id: 29,
+    title: 'Ellora Caves: A Marvel of Rock-Cut Architecture',
+    description: 'Explore the Ellora Caves, a testament to India\'s rock-cut architectural prowess.',
+    imageSrc: 'https://www.indiathatwas.com/wp-content/uploads/2012/12/DSC04843.jpg',
+    category: 'History',
+    href: '#history'
+  },
+  {
+    id: 30,
+    title: 'Jaisalmer Fort: The Golden Fortress',
+    description: 'Discover the grandeur of Jaisalmer Fort, a living fort that stands tall in the Thar Desert.',
+    imageSrc: 'https://www.trawell.in/admin/images/upload/825652759Jaisalmer_Fort_Main.jpg',
+    category: 'History',
+    href: '#history'
+  }
 ];
+
 
 const FeaturedSection = () => {
   const navigate = useNavigate();
@@ -111,6 +279,7 @@ const FeaturedSection = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
   const [isLoading, setIsLoading] = useState(false);
+  const [userBookmarks, setUserBookmarks] = useState<string[]>([]);
 
   const filteredItems = activeCategory === 'All' 
     ? featuredItems 
@@ -160,15 +329,57 @@ const FeaturedSection = () => {
   };
 
   // Item interaction handlers (to be connected to backend later)
-  const handleBookmark = (itemId: number) => {
-    console.log('Bookmark item:', itemId);
-    // Will save bookmark to user profile in backend
+  const handleBookmark = async (item: typeof featuredItems[0]) => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Please log in to bookmark items');
+      setIsAuthOpen(true);
+      setActiveTab('login');
+      return;
+    }
+    
+    try {
+      // Format the item as a JSON string to store in bookmarks
+      const itemId = `${item.title}`;
+      
+      await dashboardService.addBookmark(itemId);
+      
+      // Update local state to show bookmark is active
+      setUserBookmarks(prev => [...prev, itemId]);
+      
+      toast.success(`"${item.title}" added to your bookmarks`);
+    } catch (error: any) {
+      console.error('Bookmark error:', error);
+      toast.error(error.message || 'Failed to add bookmark');
+    }
+  };
+
+  const isItemBookmarked = (itemTitle: string): boolean => {
+    return userBookmarks.includes(itemTitle);
   };
 
   const handleShare = (itemId: number) => {
     console.log('Share item:', itemId);
     // Will implement sharing functionality
   };
+
+  // Load user bookmarks if logged in
+  useEffect(() => {
+    const fetchUserBookmarks = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const bookmarks = await dashboardService.getBookmarks();
+          setUserBookmarks(bookmarks);
+        } catch (error) {
+          console.error('Error fetching bookmarks:', error);
+        }
+      }
+    };
+    
+    fetchUserBookmarks();
+  }, []);
 
   return (
     <section id="explore" className="py-20 px-4">
@@ -379,11 +590,15 @@ const FeaturedSection = () => {
                 <Button 
                   variant="secondary" 
                   size="sm" 
-                  className="rounded-full p-2 h-8 w-8" 
-                  title="Bookmark"
-                  onClick={() => handleBookmark(item.id)}
+                  className={`rounded-full p-2 h-8 w-8 ${isItemBookmarked(item.title) ? 'bg-primary text-white' : ''}`}
+                  title={isItemBookmarked(item.title) ? 'Bookmarked' : 'Bookmark'}
+                  onClick={() => handleBookmark(item)}
                 >
-                  <BookmarkPlus size={16} />
+                  {isItemBookmarked(item.title) ? (
+                    <BookmarkCheck size={16} />
+                  ) : (
+                    <BookmarkPlus size={16} />
+                  )}
                 </Button>
                 <Button 
                   variant="secondary" 
