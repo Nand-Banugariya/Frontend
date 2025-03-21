@@ -189,20 +189,20 @@ export const heritageService = {
     // For now we're using the local data
     return featuredItems;
   },
-  
+
   // Get item details by ID
   getItemById: async (itemId: string) => {
     // This would be an API call in a real implementation
     const item = featuredItems.find(item => item.title === itemId);
     return item;
   },
-  
+
   // Get bookmarked items with details
   getBookmarkedItems: async () => {
     try {
       // Get user's bookmarks
       const bookmarkIds = await dashboardService.getBookmarks();
-      
+
       // Get details for each bookmark
       const bookmarkedItems = [];
       for (const id of bookmarkIds) {
@@ -211,7 +211,7 @@ export const heritageService = {
           bookmarkedItems.push(item);
         }
       }
-      
+
       return bookmarkedItems;
     } catch (error) {
       console.error('Error fetching bookmarked items:', error);

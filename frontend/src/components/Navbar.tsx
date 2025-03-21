@@ -53,7 +53,7 @@ const Navbar = () => {
           <span className="text-2xl md:text-3xl font-serif font-bold bg-clip-text text-transparent bg-gradient-to-r from-saffron to-india-green">
             Bhārat
           </span>
-          <span className="hidden sm:inline-block text-lg md:text-xl opacity-80 text-blue-900 text-bold font-serif">Heritage</span>
+          <span className="hidden sm:inline-block text-lg md:text-xl opacity-80 text-blue-900 text-bold font-serif">Dharohar</span>
         </a>
 
           {/* Desktop Navigation */}
@@ -63,6 +63,9 @@ const Navbar = () => {
             </Link>
             <Link to="/explore" className="text-sm font-medium hover:text-primary transition-colors">
               Explore
+            </Link>
+            <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors">
+              About Us
             </Link>
             {isAuthenticated && (
               <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
@@ -161,6 +164,13 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Explore
+            </Link>
+            <Link
+              to="/about"
+              className="block text-sm font-medium hover:text-primary transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About Us
             </Link>
             {isAuthenticated && (
               <Link
