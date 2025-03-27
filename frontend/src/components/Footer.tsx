@@ -98,11 +98,14 @@ const Footer = () => {
           <div>
             <h4 className="font-bold text-lg mb-4">Contact Us</h4>
             <ul className="space-y-3">
-              <li className="flex items-start space-x-3">
-                <MapPin size={20} className="text-primary mt-0.5" />
-                <span className="text-gray-600 dark:text-gray-300">
-                  Cultural Center, New Delhi, India
-                </span>
+              <li className="flex items-center space-x-3">
+                <Mail size={20} className="text-primary" />
+                <a 
+                  href="mailto:connect@bharatheritage.org" 
+                  className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
+                >
+                 22IT130 Jaydeep Rathod
+                </a>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={20} className="text-primary" />
@@ -110,16 +113,7 @@ const Footer = () => {
                   href="mailto:connect@bharatheritage.org" 
                   className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
                 >
-                  connect@bharatheritage.org
-                </a>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Phone size={20} className="text-primary" />
-                <a 
-                  href="tel:+911234567890" 
-                  className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
-                >
-                  +91 123 456 7890
+                 22IT131 Bhargav Raval
                 </a>
               </li>
             </ul>

@@ -64,6 +64,9 @@ const Navbar = () => {
             <Link to="/explore" className="text-sm font-medium hover:text-primary transition-colors">
               Explore
             </Link>
+            <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors">
+              About Us
+            </Link>
             {isAuthenticated && (
               <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
                 Dashboard
@@ -161,6 +164,13 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Explore
+            </Link>
+            <Link
+              to="/about"
+              className="block text-sm font-medium hover:text-primary transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About Us
             </Link>
             {isAuthenticated && (
               <Link

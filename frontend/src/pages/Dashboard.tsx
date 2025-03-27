@@ -463,7 +463,7 @@ const Dashboard = () => {
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                       <div>
-                        <CardTitle>Your Bookmarked Content</CardTitle>
+                      <CardTitle>Your Bookmarked Content</CardTitle>
                         <CardDescription>Heritage items you've saved for later</CardDescription>
                       </div>
                     </CardHeader>
@@ -519,22 +519,22 @@ const Dashboard = () => {
                           ) : (
                             // Fallback to just showing the bookmark IDs if we couldn't load the details
                             userProfile.bookmarks.map((bookmark) => (
-                              <div
-                                key={bookmark}
-                                className="flex items-center justify-between p-4 border rounded-lg"
-                              >
-                                <div>
-                                  <h4 className="font-medium">{bookmark}</h4>
-                                  <p className="text-sm text-muted-foreground">Added to bookmarks</p>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleRemoveBookmark(bookmark)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                            <div
+                              key={bookmark}
+                              className="flex items-center justify-between p-4 border rounded-lg"
+                            >
+                              <div>
+                                <h4 className="font-medium">{bookmark}</h4>
+                                <p className="text-sm text-muted-foreground">Added to bookmarks</p>
                               </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveBookmark(bookmark)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
                             ))
                           )}
                         </div>
@@ -547,7 +547,7 @@ const Dashboard = () => {
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                       <div>
-                        <CardTitle>Upcoming Cultural Events</CardTitle>
+                      <CardTitle>Upcoming Cultural Events</CardTitle>
                         <CardDescription>Events you've registered or created</CardDescription>
                       </div>
                       <Button onClick={openCreateEventDialog}>
@@ -568,20 +568,20 @@ const Dashboard = () => {
                               className="flex items-start justify-between gap-4 p-4 border rounded-lg"
                             >
                               <div className="flex gap-4">
-                                <Calendar className="h-5 w-5 text-primary mt-1" />
-                                <div>
-                                  <h4 className="font-medium">{event.name}</h4>
-                                  <p className="text-sm text-muted-foreground">{event.description}</p>
-                                  <div className="flex items-center gap-4 mt-2 text-sm">
-                                    <span className="flex items-center gap-1">
-                                      <Calendar className="h-4 w-4" />
-                                      {event.date}
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                      <MapPin className="h-4 w-4" />
-                                      {event.location}
-                                    </span>
-                                  </div>
+                              <Calendar className="h-5 w-5 text-primary mt-1" />
+                              <div>
+                                <h4 className="font-medium">{event.name}</h4>
+                                <p className="text-sm text-muted-foreground">{event.description}</p>
+                                <div className="flex items-center gap-4 mt-2 text-sm">
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="h-4 w-4" />
+                                    {event.date}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="h-4 w-4" />
+                                    {event.location}
+                                  </span>
+                                </div>
                                 </div>
                               </div>
                               <div className="flex gap-2">
