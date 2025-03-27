@@ -53,7 +53,7 @@ const Navbar = () => {
           <span className="text-2xl md:text-3xl font-serif font-bold bg-clip-text text-transparent bg-gradient-to-r from-saffron to-india-green">
             Bhārat
           </span>
-          <span className="hidden sm:inline-block text-lg md:text-xl opacity-80 text-blue-900 text-bold font-serif">Heritage</span>
+          <span className="hidden sm:inline-block text-lg md:text-xl opacity-80 text-blue-900 text-bold font-serif">Dharohar</span>
         </a>
 
           {/* Desktop Navigation */}
