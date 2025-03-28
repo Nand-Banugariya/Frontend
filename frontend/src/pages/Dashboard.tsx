@@ -275,10 +275,11 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <>
       <Navbar />
-      <div className="container mx-auto py-8 px-4 md:px-6">
-        <h1 className="text-3xl font-bold mb-2">My Dashboard</h1>
+    <div className="min-h-screen bg-slate-50">
+      <div className="container mx-auto py-5 px-4 md:px-6"> 
+        <h1 className="text-3xl font-bold mb-2 mt-20">My Dashboard</h1>
         <p className="text-gray-500 mb-6">Manage your profile, events, bookmarks, and more</p>
         
         <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -302,104 +303,104 @@ const Dashboard = () => {
 
           {/* Profile Tab Content */}
           <TabsContent value="profile" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Cultural Profile</CardTitle>
-                <CardDescription>View and update your profile information</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium mb-1">Username</p>
-                      {isEditingProfile ? (
-                        <Input
-                          value={editedProfile.username || userProfile.username}
-                          onChange={(e) => setEditedProfile({ ...editedProfile, username: e.target.value })}
-                        />
-                      ) : (
-                        <p>{userProfile.username}</p>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium mb-1">Email</p>
-                      {isEditingProfile ? (
-                        <Input
-                          value={editedProfile.email || userProfile.email}
-                          onChange={(e) => setEditedProfile({ ...editedProfile, email: e.target.value })}
-                        />
-                      ) : (
-                        <p>{userProfile.email}</p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm font-medium">Cultural Interests</p>
-                      <Dialog open={isAddInterestOpen} onOpenChange={setIsAddInterestOpen}>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="rounded-full">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add Interest
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Add New Interest</DialogTitle>
-                            <DialogDescription>
-                              Add a new cultural interest to your profile
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="interest">Interest</Label>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Your Cultural Profile</CardTitle>
+                      <CardDescription>View and update your profile information</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm font-medium mb-1">Username</p>
+                            {isEditingProfile ? (
                               <Input
-                                id="interest"
-                                value={newInterest}
-                                onChange={(e) => setNewInterest(e.target.value)}
-                                placeholder="e.g., Classical Music"
+                                value={editedProfile.username || userProfile.username}
+                                onChange={(e) => setEditedProfile({ ...editedProfile, username: e.target.value })}
                               />
-                            </div>
-                            <Button onClick={handleAddInterest} className="w-full">
-                              Add Interest
-                            </Button>
+                            ) : (
+                              <p>{userProfile.username}</p>
+                            )}
                           </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {userProfile.interests.map((interest) => (
-                        <span key={interest} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm flex items-center gap-2">
-                          {interest}
-                          <button
-                            onClick={() => handleRemoveInterest(interest)}
-                            className="hover:text-destructive"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4">
-                    {isEditingProfile ? (
-                      <div className="flex gap-2">
-                        <Button onClick={handleUpdateProfile}>Save Changes</Button>
-                        <Button variant="outline" onClick={() => setIsEditingProfile(false)}>
-                          Cancel
-                        </Button>
+                          <div>
+                            <p className="text-sm font-medium mb-1">Email</p>
+                            {isEditingProfile ? (
+                              <Input
+                                value={editedProfile.email || userProfile.email}
+                                onChange={(e) => setEditedProfile({ ...editedProfile, email: e.target.value })}
+                              />
+                            ) : (
+                              <p>{userProfile.email}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm font-medium">Cultural Interests</p>
+                            <Dialog open={isAddInterestOpen} onOpenChange={setIsAddInterestOpen}>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" className="rounded-full">
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Add Interest
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Add New Interest</DialogTitle>
+                                  <DialogDescription>
+                                    Add a new cultural interest to your profile
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                  <div className="space-y-2">
+                                    <Label htmlFor="interest">Interest</Label>
+                                    <Input
+                                      id="interest"
+                                      value={newInterest}
+                                      onChange={(e) => setNewInterest(e.target.value)}
+                                      placeholder="e.g., Classical Music"
+                                    />
+                                  </div>
+                                  <Button onClick={handleAddInterest} className="w-full">
+                                    Add Interest
+                                  </Button>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {userProfile.interests.map((interest) => (
+                              <span key={interest} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm flex items-center gap-2">
+                                {interest}
+                                <button
+                                  onClick={() => handleRemoveInterest(interest)}
+                                  className="hover:text-destructive"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        <div className="pt-4">
+                          {isEditingProfile ? (
+                            <div className="flex gap-2">
+                              <Button onClick={handleUpdateProfile}>Save Changes</Button>
+                              <Button variant="outline" onClick={() => setIsEditingProfile(false)}>
+                                Cancel
+                              </Button>
+                            </div>
+                          ) : (
+                            <Button onClick={() => setIsEditingProfile(true)}>Edit Profile</Button>
+                          )}
+                        </div>
                       </div>
-                    ) : (
-                      <Button onClick={() => setIsEditingProfile(true)}>Edit Profile</Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
           {/* Events Tab Content */}
           <TabsContent value="events" className="space-y-4">
             <Card>
@@ -460,168 +461,168 @@ const Dashboard = () => {
 
           {/* Bookmarks Tab Content */}
           <TabsContent value="bookmarks" className="space-y-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                <CardTitle>Your Bookmarked Content</CardTitle>
-                  <CardDescription>Heritage items you've saved for later</CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {userProfile.bookmarks.length === 0 ? (
-                  <p className="text-center py-10 text-muted-foreground">
-                    No bookmarked content yet. Explore the homepage to find cultural content to bookmark.
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {bookmarkedItems.length > 0 ? (
-                      bookmarkedItems.map((item) => (
-                        <div
-                          key={item.title}
-                          className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                        >
-                          <div className="flex-shrink-0 h-16 w-16 rounded overflow-hidden">
-                            <img 
-                              src={item.imageSrc} 
-                              alt={item.title} 
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-medium">{item.title}</h4>
-                            <p className="text-sm text-muted-foreground line-clamp-1">
-                              {item.description}
-                            </p>
-                            <span className="inline-block mt-1 text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">
-                              {item.category}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="gap-1"
-                              onClick={() => window.open(item.href, '_blank')}
-                            >
-                              <ExternalLink size={14} />
-                              View
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleRemoveBookmark(item.title)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      // Fallback to just showing the bookmark IDs if we couldn't load the details
-                      userProfile.bookmarks.map((bookmark) => (
-                      <div
-                        key={bookmark}
-                        className="flex items-center justify-between p-4 border rounded-lg"
-                      >
-                        <div>
-                          <h4 className="font-medium">{bookmark}</h4>
-                          <p className="text-sm text-muted-foreground">Added to bookmarks</p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveBookmark(bookmark)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <div>
+                      <CardTitle>Your Bookmarked Content</CardTitle>
+                        <CardDescription>Heritage items you've saved for later</CardDescription>
                       </div>
-                      ))
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
+                    </CardHeader>
+                    <CardContent>
+                      {userProfile.bookmarks.length === 0 ? (
+                        <p className="text-center py-10 text-muted-foreground">
+                          No bookmarked content yet. Explore the homepage to find cultural content to bookmark.
+                        </p>
+                      ) : (
+                        <div className="space-y-4">
+                          {bookmarkedItems.length > 0 ? (
+                            bookmarkedItems.map((item) => (
+                              <div
+                                key={item.title}
+                                className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                              >
+                                <div className="flex-shrink-0 h-16 w-16 rounded overflow-hidden">
+                                  <img 
+                                    src={item.imageSrc} 
+                                    alt={item.title} 
+                                    className="h-full w-full object-cover"
+                                  />
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-medium">{item.title}</h4>
+                                  <p className="text-sm text-muted-foreground line-clamp-1">
+                                    {item.description}
+                                  </p>
+                                  <span className="inline-block mt-1 text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+                                    {item.category}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-1"
+                                    onClick={() => window.open(item.href, '_blank')}
+                                  >
+                                    <ExternalLink size={14} />
+                                    View
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRemoveBookmark(item.title)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            // Fallback to just showing the bookmark IDs if we couldn't load the details
+                            userProfile.bookmarks.map((bookmark) => (
+                            <div
+                              key={bookmark}
+                              className="flex items-center justify-between p-4 border rounded-lg"
+                            >
+                              <div>
+                                <h4 className="font-medium">{bookmark}</h4>
+                                <p className="text-sm text-muted-foreground">Added to bookmarks</p>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveBookmark(bookmark)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            ))
+                          )}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
           {/* Activity Tab Content */}
           <TabsContent value="activity" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Your recent interactions and contributions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {recentActivities.length === 0 ? (
-                  <p className="text-center py-10 text-muted-foreground">
-                    No recent activity
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {recentActivities.map((activity) => (
-                      <div
-                        key={activity.id}
-                        className="flex items-start gap-4 p-4 border rounded-lg"
-                      >
-                        {activity.type === 'bookmark' && <Heart className="h-5 w-5 text-primary mt-1" />}
-                        {activity.type === 'comment' && <MessageSquare className="h-5 w-5 text-primary mt-1" />}
-                        {activity.type === 'share' && <Share2 className="h-5 w-5 text-primary mt-1" />}
-                        <div>
-                          <p className="text-sm">
-                            {activity.type === 'bookmark' && 'Bookmarked'}
-                            {activity.type === 'comment' && 'Commented on'}
-                            {activity.type === 'share' && 'Shared'}
-                            {' '}
-                            <span className="font-medium">{activity.item}</span>
-                          </p>
-                          <p className="text-sm text-muted-foreground">{activity.date}</p>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Recent Activity</CardTitle>
+                      <CardDescription>Your recent interactions and contributions</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {recentActivities.length === 0 ? (
+                        <p className="text-center py-10 text-muted-foreground">
+                          No recent activity
+                        </p>
+                      ) : (
+                        <div className="space-y-4">
+                          {recentActivities.map((activity) => (
+                            <div
+                              key={activity.id}
+                              className="flex items-start gap-4 p-4 border rounded-lg"
+                            >
+                              {activity.type === 'bookmark' && <Heart className="h-5 w-5 text-primary mt-1" />}
+                              {activity.type === 'comment' && <MessageSquare className="h-5 w-5 text-primary mt-1" />}
+                              {activity.type === 'share' && <Share2 className="h-5 w-5 text-primary mt-1" />}
+                              <div>
+                                <p className="text-sm">
+                                  {activity.type === 'bookmark' && 'Bookmarked'}
+                                  {activity.type === 'comment' && 'Commented on'}
+                                  {activity.type === 'share' && 'Shared'}
+                                  {' '}
+                                  <span className="font-medium">{activity.item}</span>
+                                </p>
+                                <p className="text-sm text-muted-foreground">{activity.date}</p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
           {/* Posts Tab Content */}
           <TabsContent value="posts" className="space-y-4">
             <div className="grid grid-cols-1 gap-6">
-              <Card>
-                <CardHeader>
+                  <Card>
+                    <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FileText size={20} /> Create New Post
                   </CardTitle>
                   <CardDescription>
                     Share cultural stories, photos, events, or blogs with the community
                   </CardDescription>
-                </CardHeader>
-                <CardContent>
+                    </CardHeader>
+                    <CardContent>
                   <CreatePostForm />
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
+                    </CardContent>
+                  </Card>
+                
+                  <Card>
+                    <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FileText size={20} /> Your Posts
                   </CardTitle>
                   <CardDescription>
                     Manage your previously submitted cultural content
                   </CardDescription>
-                </CardHeader>
-                <CardContent>
+                    </CardHeader>
+                    <CardContent>
                   {/* This would ideally be populated from API */}
-                  <div className="space-y-4">
+                        <div className="space-y-4">
                     {userProfile?.posts && userProfile.posts.length > 0 ? (
                       userProfile.posts.map((post) => (
                         <div key={post.id} className="border rounded-lg p-4 flex justify-between items-start">
-                          <div>
+                              <div>
                             <h3 className="font-medium">{post.title}</h3>
                             <p className="text-sm text-gray-500">
                               Posted on {new Date(post.createdAt).toLocaleDateString()}
                             </p>
                             <p className="text-sm mt-1">{post.contentType}</p>
-                          </div>
+                              </div>
                           <div className="flex gap-2">
                             <Button variant="outline" size="sm">
                               <Edit size={16} className="mr-2" />
@@ -631,7 +632,7 @@ const Dashboard = () => {
                               <Trash2 size={16} className="mr-2" />
                               Delete
                             </Button>
-                          </div>
+                            </div>
                         </div>
                       ))
                     ) : (
@@ -641,15 +642,15 @@ const Dashboard = () => {
                         <p className="mt-1 text-sm text-gray-500">
                           Create your first post to share with the community.
                         </p>
-                      </div>
-                    )}
+                        </div>
+                      )}
                   </div>
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
             </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+                </TabsContent>
+              </Tabs>
+            </div>
       
       {/* Event Dialog */}
       <Dialog open={isEventDialogOpen} onOpenChange={setIsEventDialogOpen}>
@@ -721,6 +722,7 @@ const Dashboard = () => {
       
       <Footer />
     </div>
+    </>
   );
 };
 

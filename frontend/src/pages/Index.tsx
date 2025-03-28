@@ -3,9 +3,9 @@ import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-background">
+  return (<>
       <Navbar />
+    <div className="min-h-screen bg-background">
       <Hero />
       
       {/* Featured Art Section */}
@@ -143,48 +143,16 @@ const Index = () => {
       <section className="py-20 px-4 bg-gradient-to-r from-saffron/5 to-india-green/5">
         <div className="max-w-4xl mx-auto text-center">
           <blockquote className="text-2xl md:text-3xl font-serif italic font-medium text-gray-700 dark:text-gray-200">
-            "India is the cradle of the human race, the birthplace of human speech, the mother of history, the grandmother of legend, and the great-grandmother of tradition."
+          उत्तरं यत् समुद्रस्य हिमाद्रेश्चैव दक्षिणम् |
+          वर्षं तद् भारतं नाम भारती यत्र सन्ततिः ||
           </blockquote>
-          <cite className="block mt-4 text-lg font-medium text-gray-500">- Mark Twain</cite>
         </div>
       </section>
       
-      {/* Newsletter */}
-      <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-xl p-8 md:p-12 shadow-xl border border-gray-200 dark:border-gray-700">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">Stay Connected with our Cultural Journey</h2>
-              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Subscribe to receive updates on new cultural stories, upcoming festivals, and heritage preservation efforts.
-              </p>
-            </div>
-            
-            <form className="max-w-xl mx-auto">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <input 
-                  type="email" 
-                  placeholder="Your email address" 
-                  className="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white dark:bg-gray-800"
-                  required
-                />
-                <button 
-                  type="submit" 
-                  className="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition-colors shadow-md shadow-primary/20"
-                >
-                  Subscribe
-                </button>
-              </div>
-              <p className="text-xs text-gray-500 mt-3 text-center">
-                By subscribing, you agree to our Privacy Policy and consent to receive cultural updates via email.
-              </p>
-            </form>
-          </div>
-        </div>
-      </section>
-      
-      <Footer />
+       
     </div>
+      <Footer />
+    </>
   );
 };
 

@@ -16,6 +16,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
+import FestivalCalendar from "./pages/FestivalCalendar";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/festivals" element={<FestivalCalendar />} />
           <Route 
             path="/dashboard" 
             element={

@@ -101,19 +101,19 @@ const Footer = () => {
               <li className="flex items-center space-x-3">
                 <Mail size={20} className="text-primary" />
                 <a 
-                  href="mailto:connect@bharatheritage.org" 
+                  href="mailto:bhargavraval27473@gmail.com" 
                   className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
                 >
-                 22IT130 Jaydeep Rathod
+                 Bhargav Raval
                 </a>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={20} className="text-primary" />
                 <a 
-                  href="mailto:connect@bharatheritage.org" 
+                  href="mailto:jaydeeprathod6624@gmail.com" 
                   className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
                 >
-                 22IT131 Bhargav Raval
+                 Jaydeep Rathod
                 </a>
               </li>
             </ul>
@@ -123,7 +123,7 @@ const Footer = () => {
         <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
           <p>&copy; {new Date().getFullYear()} Bhārat Heritage. All rights reserved.</p>
           <p className="mt-2">
-            Celebrating the cultural diversity and unity of India. Made with ❤️ for preserving heritage.
+            Celebrating the cultural diversity, unity and lagecy of India.
           </p>
         </div>
       </div>
