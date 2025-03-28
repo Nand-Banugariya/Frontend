@@ -55,6 +55,12 @@ export interface UserProfile {
   contributions: string[];
   badges: string[];
   avatar?: string;
+  posts?: {
+    id: number;
+    title: string;
+    contentType: string;
+    createdAt: string;
+  }[];
 }
 
 export interface Event {

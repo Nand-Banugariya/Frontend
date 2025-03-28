@@ -1,7 +1,5 @@
-
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import FeaturedSection from '@/components/FeaturedSection';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -9,7 +7,6 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <FeaturedSection />
       
       {/* Featured Art Section */}
       <section id="arts" className="py-20 px-4 bg-gradient-subtle">

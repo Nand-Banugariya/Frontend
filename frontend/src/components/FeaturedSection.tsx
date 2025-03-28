@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CulturalCard from './CulturalCard';
+import MapSection from './MapSection';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -46,14 +47,6 @@ export const featuredItems: HeritageItem[] = [
     imageSrc: 'https://cdn.dnaindia.com/sites/default/files/styles/full/public/2021/11/04/1003926-diwali-ani.jpg',
     category: 'Festivals',
     href: '#festivals'
-  },
-  {
-    id: 3,
-    title: 'The Flavors of South India',
-    description: 'A journey through the distinctive spices, ingredients, and cooking methods of South Indian cuisine.',
-    imageSrc: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=2070&auto=format&fit=crop',
-    category: 'Cuisine',
-    href: '#cuisine'
   },
   {
     id: 4,
@@ -179,31 +172,6 @@ export const featuredItems: HeritageItem[] = [
     href: '#festivals'
   },
   // Cuisine
-  {
-    id: 19,
-    title: 'The Spices of Chettinad',
-    description: 'Explore the fiery and aromatic cuisine of Chettinad, known for its unique spice blends and flavors.',
-    imageSrc: 'https://images.deccanherald.com/deccanherald%2F2024-06%2Fa4b3d8c2-4fb7-4103-8705-7997fee11d02%2Ffile7e1dqonxlc1bkn572br.jpg?auto=format%2Ccompress&fmt=webp&fit=max&format=webp&q=70&w=400&dpr=2',
-    category: 'Cuisine',
-    href: '#cuisine'
-  },
-  {
-    id: 20,
-    title: 'Bengali Sweets: A Taste of Tradition',
-    description: 'Discover the world of Bengali sweets, from the luscious rasgulla to the creamy sandesh.',
-    imageSrc: 'https://images.slurrp.com/webstories/wp-content/uploads/2023/10/13181917/cropped-daedf303b07fdfb45b1d6f221736182d-640x853.jpg',
-    category: 'Cuisine',
-    href: '#cuisine'
-  },
-  {
-    id: 21,
-    title: 'Awadhi Cuisine: Royal Flavors',
-    description: 'Delve into the rich and royal flavors of Awadhi cuisine, famous for its biryanis and kebabs.',
-    imageSrc: 'https://restaurantindia.s3.ap-south-1.amazonaws.com/s3fs-public/content6099.jpg',
-    category: 'Cuisine',
-    href: '#cuisine'
-  },
- 
   // Music & Dance
   {
     id: 23,
@@ -218,22 +186,6 @@ export const featuredItems: HeritageItem[] = [
     title: 'The Rhythms of Bhangra',
     description: 'Feel the energetic beats of Bhangra, a lively folk dance from Punjab.',
     imageSrc: 'https://covers.stocktune.com/public/1/f/0/1f0d88a0-d5a8-4004-b758-90bad44d418d_large/vibrant-punjab-dance-beats-stocktune.jpg',
-    category: 'Music & Dance',
-    href: '#music'
-  },
-  {
-    id: 25,
-    title: 'Sitar: The Sound of India',
-    description: 'Discover the melodious tunes of the sitar, an iconic string instrument in Indian classical music.',
-    imageSrc: 'https://rvb-img.reverb.com/image/upload/s--3hD6kFeh--/a_0/f_auto,t_large/v1665998603/axnkzbpamc3qi3ynvxai.jpg',
-    category: 'Music & Dance',
-    href: '#music'
-  },
-  {
-    id: 26,
-    title: 'Odissi: Dance of the Divine',
-    description: 'Explore Odissi, one of the oldest surviving dance forms, known for its grace and spiritual expression.',
-    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTw5PJToMKKrp87JDUJpxh1mP6AtgrHlO9tw&s',
     category: 'Music & Dance',
     href: '#music'
   },
@@ -380,6 +332,9 @@ const FeaturedSection = () => {
     
     fetchUserBookmarks();
   }, []);
+
+  // Filter history items for the map
+  const historyItems = featuredItems.filter(item => item.category === 'History');
 
   return (
     <section id="explore" className="py-20 px-4">
@@ -584,6 +539,7 @@ const FeaturedSection = () => {
                 href={item.href}
                 category={item.category}
                 index={index}
+                id={item.id}
               />
               {/* Action buttons that will connect to backend */}
               <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -613,6 +569,22 @@ const FeaturedSection = () => {
             </div>
           ))}
         </div>
+
+        {/* Map Section - Added new section */}
+        {(activeCategory === 'All' || activeCategory === 'History') && (
+          <div className="mt-20">
+            <div className="mb-8 text-center">
+              <span className="inline-block px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium mb-2">
+                Interactive Map
+              </span>
+              <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Historical Heritage Sites of India</h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Explore the geographical distribution of India's magnificent historical landmarks.
+              </p>
+            </div>
+            <MapSection historyItems={historyItems} />
+          </div>
+        )}
       </div>
     </section>
   );

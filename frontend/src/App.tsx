@@ -8,6 +8,9 @@ import Dashboard from "./pages/Dashboard";
 import AboutUs from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import ExplorePage from "./pages/Explore";
+import HeritageDetail from "./pages/HeritageDetail";
+import Community from "./pages/Community";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -30,7 +33,9 @@ const App = () => (
           />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="/about" element={<AboutUs />} />
-          <Route path="/explore" element={<NotFound />} />
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/heritage/:id" element={<HeritageDetail />} />
+          <Route path="/community" element={<Community />} />
           <Route path="*" element={<AboutUs />} />
         </Routes>
       </BrowserRouter>

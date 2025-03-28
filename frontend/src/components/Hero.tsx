@@ -1,6 +1,6 @@
-
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -43,12 +43,12 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <a
-              href="#explore"
+            <Link
+              to="/explore"
               className="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium flex items-center gap-2 transition-all shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
             >
-              Explore Now <ChevronRight size={18} />
-            </a>
+              Explore Now <ChevronRight size={18} />  
+            </Link>
             <a
               href="#stories"
               className="px-8 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-primary hover:text-primary rounded-lg font-medium flex items-center gap-2 transition-all shadow-md hover:shadow-lg"
