@@ -256,6 +256,18 @@ const FeaturedSection = () => {
     try {
       setIsLoading(true);
       const response = await authService.login(data.email, data.password);
+      
+      // Check if the account is verified
+      if (response.needsVerification) {
+        toast.error('Please verify your email before logging in');
+        // Ask user if they want to resend verification email
+        if (confirm('Would you like to resend the verification email?')) {
+          await authService.resendVerification(data.email);
+          toast.success('Verification email sent! Please check your inbox.');
+        }
+        return;
+      }
+      
       setIsAuthOpen(false);
       toast.success('Login successful!');
       navigate('/dashboard');
@@ -271,8 +283,8 @@ const FeaturedSection = () => {
       setIsLoading(true);
       const response = await authService.register(data.name, data.email, data.password);
       setIsAuthOpen(false);
-      toast.success('Registration successful!');
-      navigate('/dashboard');
+      toast.success('Registration successful! Please check your email to verify your account.');
+      // Don't navigate to dashboard since user needs to verify email first
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Registration failed');
     } finally {
@@ -372,90 +384,21 @@ const FeaturedSection = () => {
                   </TabsList>
                   
                   <TabsContent value="login" className="space-y-4 py-2">
-                    <Form {...loginForm}>
-                      <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
-                        <FormField
-                          control={loginForm.control}
-                          name="email"
-                          rules={{ required: 'Email is required' }}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input placeholder="you@example.com" type="email" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={loginForm.control}
-                          name="password"
-                          rules={{ required: 'Password is required' }}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Password</FormLabel>
-                              <FormControl>
-                                <Input type="password" placeholder="••••••••" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                          {isLoading ? 'Signing in...' : 'Sign In'}
-                        </Button>
-                      </form>
-                    </Form>
+                    <div className="space-y-4">
+                      <p>Already have an account? Use our dedicated sign-in page for the best experience.</p>
+                      <Button className="w-full" onClick={() => navigate('/signin')}>
+                        Go to Sign In
+                      </Button>
+                    </div>
                   </TabsContent>
                   
                   <TabsContent value="register" className="space-y-4 py-2">
-                    <Form {...registerForm}>
-                      <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4">
-                        <FormField
-                          control={registerForm.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Username</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Choose a username" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={registerForm.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input placeholder="you@example.com" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={registerForm.control}
-                          name="password"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Password</FormLabel>
-                              <FormControl>
-                                <Input type="password" placeholder="••••••••" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                          {isLoading ? 'Creating account...' : 'Create Account'}
-                        </Button>
-                      </form>
-                    </Form>
+                    <div className="space-y-4">
+                      <p>Create a new account using our sign-up page with enhanced security features.</p>
+                      <Button className="w-full" onClick={() => navigate('/signup')}>
+                        Go to Sign Up
+                      </Button>
+                    </div>
                   </TabsContent>
                 </Tabs>
               </DialogContent>

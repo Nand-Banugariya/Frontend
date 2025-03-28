@@ -3,139 +3,25 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Filter, Calendar, Bookmark, Search, ThumbsUp, MessageCircle, Share2, Image, Video, Clock, MapPin, LogIn, UserPlus } from 'lucide-react';
+import { Filter, Calendar, Bookmark, Search, ThumbsUp, MessageCircle, Share2, Image, Video, Clock, MapPin, LogIn, UserPlus, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-import { authService } from '@/services/api';
+import { authService, communityService, Post } from '@/services/api';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Types for community content
 type ContentType = 'story' | 'blog' | 'photo' | 'event';
-
-interface CommunityPost {
-  id: number;
-  title: string;
-  content: string;
-  contentType: ContentType;
-  author: {
-    name: string;
-    avatar?: string;
-  };
-  createdAt: string;
-  likes: number;
-  comments: number;
-  featured: boolean;
-  images?: string[];
-  location?: string;
-  eventDate?: string;
-}
-
-// Mock data for community posts
-const mockPosts: CommunityPost[] = [
-  {
-    id: 1,
-    title: "My Experience at the Taj Mahal",
-    content: "Visiting the Taj Mahal was a life-changing experience. The intricate marble work and perfect symmetry are even more breathtaking in person than in photographs. I arrived early in the morning to watch the sunrise cast a golden glow over the white marble...",
-    contentType: "story",
-    author: {
-      name: "Arjun Sharma",
-      avatar: "https://i.pravatar.cc/150?img=11"
-    },
-    createdAt: "2023-11-15T12:00:00Z",
-    likes: 85,
-    comments: 12,
-    featured: true,
-    images: ["https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1964&auto=format&fit=crop"],
-    location: "Agra, Uttar Pradesh"
-  },
-  {
-    id: 2,
-    title: "The Vibrant Colors of Holi Festival",
-    content: "Celebrating Holi in Mathura was an explosion of color and joy! People of all ages came together to throw colored powders and water, dance to traditional music, and share festive foods...",
-    contentType: "blog",
-    author: {
-      name: "Priya Patel",
-      avatar: "https://i.pravatar.cc/150?img=5"
-    },
-    createdAt: "2023-10-22T14:30:00Z",
-    likes: 124,
-    comments: 28,
-    featured: true,
-    images: ["https://dims.apnews.com/dims4/default/a563f6c/2147483647/strip/false/crop/4500x3001+0+0/resize/1486x991!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F8f%2F90%2F7895d6e91470dba7c6ccb2d5a4da%2F5a9cb53123a84899a0f3b7a9dc9cc2a5"],
-    location: "Mathura, Uttar Pradesh"
-  },
-  {
-    id: 3,
-    title: "Traditional Craftsmanship in Jaipur",
-    content: "The artisans of Jaipur continue to practice traditional crafts that have been passed down through generations. I had the opportunity to visit several workshops and observe the meticulous process of block printing on textiles...",
-    contentType: "photo",
-    author: {
-      name: "Ravi Kumar",
-      avatar: "https://i.pravatar.cc/150?img=12"
-    },
-    createdAt: "2023-10-10T09:15:00Z",
-    likes: 67,
-    comments: 9,
-    featured: false,
-    images: ["https://media.timeout.com/images/105237002/image.jpg", "https://www.outlookindia.com/outlooktraveller/public/uploads/filemanager/images/shutterstock_1173714454.jpg"],
-    location: "Jaipur, Rajasthan"
-  },
-  {
-    id: 4,
-    title: "Annual Folk Dance Festival",
-    content: "Join us for a celebration of India's diverse folk dance traditions! Performers from across the country will showcase regional dance forms including Bhangra, Garba, Lavani, and Bihu...",
-    contentType: "event",
-    author: {
-      name: "Cultural Heritage Society",
-      avatar: "https://i.pravatar.cc/150?img=14"
-    },
-    createdAt: "2023-10-05T18:00:00Z",
-    likes: 43,
-    comments: 7,
-    featured: true,
-    images: ["https://d2e1hu1ktur9ur.cloudfront.net/wp-content/uploads/2022/01/13-Best-Folk-Dances-of-India-That-You-Must-Watch-and-Enjoy.webp"],
-    location: "Delhi",
-    eventDate: "2023-12-15T17:00:00Z"
-  },
-  {
-    id: 5,
-    title: "The Lost Temples of Hampi",
-    content: "Exploring the ancient ruins of Hampi was like stepping back in time. Once the capital of the Vijayanagara Empire, this UNESCO World Heritage site features stunning stone temples, intricate carvings, and massive boulders...",
-    contentType: "blog",
-    author: {
-      name: "Maya Desai",
-      avatar: "https://i.pravatar.cc/150?img=9"
-    },
-    createdAt: "2023-09-28T11:45:00Z",
-    likes: 92,
-    comments: 15,
-    featured: false,
-    images: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPGB4fpVJodjvSVQZ6_ZUDLbp1HqF5l1sbPw&s"],
-    location: "Hampi, Karnataka"
-  },
-  {
-    id: 6,
-    title: "Workshop on Madhubani Painting",
-    content: "Learn the traditional art of Madhubani painting in this hands-on workshop! All materials will be provided, and participants will create their own artwork to take home...",
-    contentType: "event",
-    author: {
-      name: "Arts & Crafts Foundation",
-      avatar: "https://i.pravatar.cc/150?img=16"
-    },
-    createdAt: "2023-09-15T10:30:00Z",
-    likes: 38,
-    comments: 5,
-    featured: false,
-    images: ["https://d35l77wxi0xou3.cloudfront.net/opencart/image/productFromFeb2020/Traditional%20Madhubani%20Painting1615964610-600x600.jpg"],
-    location: "Mumbai, Maharashtra",
-    eventDate: "2023-11-20T14:00:00Z"
-  }
-];
 
 // Format date for display
 const formatDate = (dateString: string) => {
@@ -185,10 +71,42 @@ const getTimeSince = (dateString: string) => {
 };
 
 // Post card component
-const PostCard = ({ post }: { post: CommunityPost }) => {
+const PostCard = ({ post, onDelete }: { post: Post; onDelete: (postId: string) => void }) => {
   const [liked, setLiked] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const hasImages = post.images && post.images.length > 0;
+  const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const isOwner = currentUser.id === post.author.id;
   
+  const handleEdit = () => {
+    if (!post._id && !post.id) {
+      toast.error('Invalid post ID');
+      return;
+    }
+    const postId = post._id || post.id;
+    navigate(`/dashboard/edit-post/${postId}`);
+  };
+
+  const handleDelete = async () => {
+    if (!post._id && !post.id) {
+      toast.error('Invalid post ID');
+      return;
+    }
+
+    if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+      try {
+        setIsDeleting(true);
+        const postId = post._id || post.id;
+        await onDelete(postId);
+      } catch (error: any) {
+        console.error('Delete error:', error);
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
       {/* Post header */}
@@ -203,7 +121,7 @@ const PostCard = ({ post }: { post: CommunityPost }) => {
             <p className="text-xs text-gray-500">{getTimeSince(post.createdAt)}</p>
           </div>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
             post.contentType === 'story' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
             post.contentType === 'blog' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
@@ -212,6 +130,29 @@ const PostCard = ({ post }: { post: CommunityPost }) => {
           }`}>
             {post.contentType.charAt(0).toUpperCase() + post.contentType.slice(1)}
           </span>
+          {isOwner && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleEdit}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={handleDelete} 
+                  className="text-red-600"
+                  disabled={isDeleting}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
       
@@ -281,7 +222,7 @@ const PostCard = ({ post }: { post: CommunityPost }) => {
 };
 
 // Event card component
-const EventCard = ({ event }: { event: CommunityPost }) => {
+const EventCard = ({ event }: { event: Post }) => {
   // Check if event has a valid image
   const hasValidImage = event.images && event.images.length > 0 && event.images[0];
   
@@ -352,7 +293,7 @@ const EventCard = ({ event }: { event: CommunityPost }) => {
 };
 
 // Featured post component
-const FeaturedPost = ({ post }: { post: CommunityPost }) => {
+const FeaturedPost = ({ post }: { post: Post }) => {
   // Check if post has images before rendering
   const hasValidImage = post.images && post.images.length > 0 && post.images[0];
   
@@ -411,12 +352,15 @@ const FeaturedPost = ({ post }: { post: CommunityPost }) => {
 // Main component
 const Community: React.FC = () => {
   const [activeTab, setActiveTab] = useState('all');
-  const [posts, setPosts] = useState<CommunityPost[]>(mockPosts);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [featuredPosts, setFeaturedPosts] = useState<Post[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<Post[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authActiveTab, setAuthActiveTab] = useState('login');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
   const navigate = useNavigate();
   
   // Forms for login/signup
@@ -437,7 +381,7 @@ const Community: React.FC = () => {
 
   const handleLogin = async (data: any) => {
     try {
-      setIsLoading(true);
+      setIsAuthLoading(true);
       await authService.login(data.email, data.password);
       setIsAuthOpen(false);
       toast.success('Login successful!');
@@ -446,13 +390,13 @@ const Community: React.FC = () => {
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Login failed');
     } finally {
-      setIsLoading(false);
+      setIsAuthLoading(false);
     }
   };
 
   const handleRegister = async (data: any) => {
     try {
-      setIsLoading(true);
+      setIsAuthLoading(true);
       await authService.register(data.name, data.email, data.password);
       setIsAuthOpen(false);
       toast.success('Registration successful!');
@@ -461,46 +405,88 @@ const Community: React.FC = () => {
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Registration failed');
     } finally {
-      setIsLoading(false);
+      setIsAuthLoading(false);
     }
   };
   
+  // Check if user is logged in
   useEffect(() => {
-    // Check if user is logged in
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token);
   }, []);
   
+  // Function to fetch all data
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Fetch all posts
+      const allPosts = await communityService.getPosts(activeTab === 'all' ? undefined : activeTab);
+      setPosts(allPosts.posts);
+      
+      // Fetch featured posts
+      const featured = await communityService.getFeaturedPosts();
+      setFeaturedPosts(featured);
+      
+      // Fetch upcoming events
+      const events = await communityService.getUpcomingEvents();
+      setUpcomingEvents(events);
+    } catch (error) {
+      console.error('Error fetching community data:', error);
+      toast.error('Failed to load community content');
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch posts and events from API
+  useEffect(() => {
+    fetchData();
+  }, [activeTab]);
+
+  // Function to handle post deletion
+  const handleDeletePost = async (postId: string) => {
+    try {
+      await communityService.deletePost(postId);
+      // Refresh all data after successful deletion
+      await fetchData();
+      toast.success('Post deleted successfully');
+    } catch (error: any) {
+      console.error('Error deleting post:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete post. Please try again.');
+      throw error; // Re-throw the error to be caught by the PostCard component
+    }
+  };
+
   // Filter posts based on active tab
   const filteredPosts = posts.filter(post => {
     if (activeTab === 'all') return true;
     return post.contentType === activeTab;
   });
   
-  // Get featured posts
-  const featuredPosts = posts.filter(post => post.featured);
-  
-  // Get upcoming events
-  const upcomingEvents = posts.filter(post => {
+  // Function to handle tab changes and fetch filtered posts
+  const handleTabChange = async (value: string) => {
+    setActiveTab(value);
+    
     try {
-      // Safely check for event type and valid date
-      if (post.contentType !== 'event' || !post.eventDate) {
-        return false;
-      }
+      setIsLoading(true);
       
-      const eventDate = new Date(post.eventDate);
-      // Check if date is valid before comparison
-      if (isNaN(eventDate.getTime())) {
-        console.warn(`Invalid event date for post ID: ${post.id}`);
-        return false;
+      // If tab is "all", fetch all posts, otherwise get filtered posts
+      if (value === 'all') {
+        const allPosts = await communityService.getPosts();
+        setPosts(allPosts.posts);
+      } else {
+        const filteredPosts = await communityService.getPosts(value);
+        setPosts(filteredPosts.posts);
       }
-      
-      return eventDate > new Date();
     } catch (error) {
-      console.error('Error filtering event:', error);
-      return false;
+      console.error('Error fetching filtered posts:', error);
+      toast.error('Failed to load filtered content');
+    } finally {
+      setIsLoading(false);
     }
-  });
+  };
 
   try {
     return (
@@ -574,8 +560,8 @@ const Community: React.FC = () => {
                                 </FormItem>
                               )}
                             />
-                            <Button type="submit" className="w-full" disabled={isLoading}>
-                              {isLoading ? 'Signing in...' : 'Sign In'}
+                            <Button type="submit" className="w-full" disabled={isAuthLoading}>
+                              {isAuthLoading ? 'Signing in...' : 'Sign In'}
                             </Button>
                           </form>
                         </Form>
@@ -623,8 +609,8 @@ const Community: React.FC = () => {
                                 </FormItem>
                               )}
                             />
-                            <Button type="submit" className="w-full" disabled={isLoading}>
-                              {isLoading ? 'Creating account...' : 'Create Account'}
+                            <Button type="submit" className="w-full" disabled={isAuthLoading}>
+                              {isAuthLoading ? 'Creating account...' : 'Create Account'}
                             </Button>
                           </form>
                         </Form>
@@ -654,7 +640,7 @@ const Community: React.FC = () => {
             <div className="lg:col-span-2 space-y-8">
               {/* Tabs for filtering */}
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-                <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
+                <Tabs defaultValue="all" value={activeTab} onValueChange={handleTabChange}>
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-bold">Explore Content</h3>
                     <div className="flex gap-2">
@@ -676,75 +662,83 @@ const Community: React.FC = () => {
                     <TabsTrigger value="event">Events</TabsTrigger>
                   </TabsList>
                   
-                  <TabsContent value="all" className="space-y-0 mt-0">
-                    {filteredPosts.length === 0 ? (
-                      <div className="text-center py-10">
-                        <p className="text-gray-500">No posts found</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {filteredPosts.map(post => (
-                          <PostCard key={post.id} post={post} />
-                        ))}
-                      </div>
-                    )}
-                  </TabsContent>
-                  
-                  <TabsContent value="story" className="space-y-0 mt-0">
-                    {filteredPosts.length === 0 ? (
-                      <div className="text-center py-10">
-                        <p className="text-gray-500">No stories found</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {filteredPosts.map(post => (
-                          <PostCard key={post.id} post={post} />
-                        ))}
-                      </div>
-                    )}
-                  </TabsContent>
-                  
-                  <TabsContent value="blog" className="space-y-0 mt-0">
-                    {filteredPosts.length === 0 ? (
-                      <div className="text-center py-10">
-                        <p className="text-gray-500">No blogs found</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {filteredPosts.map(post => (
-                          <PostCard key={post.id} post={post} />
-                        ))}
-                      </div>
-                    )}
-                  </TabsContent>
-                  
-                  <TabsContent value="photo" className="space-y-0 mt-0">
-                    {filteredPosts.length === 0 ? (
-                      <div className="text-center py-10">
-                        <p className="text-gray-500">No photos found</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {filteredPosts.map(post => (
-                          <PostCard key={post.id} post={post} />
-                        ))}
-                      </div>
-                    )}
-                  </TabsContent>
-                  
-                  <TabsContent value="event" className="space-y-0 mt-0">
-                    {filteredPosts.length === 0 ? (
-                      <div className="text-center py-10">
-                        <p className="text-gray-500">No events found</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {filteredPosts.map(post => (
-                          <PostCard key={post.id} post={post} />
-                        ))}
-                      </div>
-                    )}
-                  </TabsContent>
+                  {isLoading ? (
+                    <div className="flex justify-center py-10">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                  ) : (
+                    <>
+                      <TabsContent value="all" className="space-y-0 mt-0">
+                        {filteredPosts.length === 0 ? (
+                          <div className="text-center py-10">
+                            <p className="text-gray-500">No posts found</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {filteredPosts.map(post => (
+                              <PostCard key={post.id} post={post} onDelete={handleDeletePost} />
+                            ))}
+                          </div>
+                        )}
+                      </TabsContent>
+                      
+                      <TabsContent value="story" className="space-y-0 mt-0">
+                        {filteredPosts.length === 0 ? (
+                          <div className="text-center py-10">
+                            <p className="text-gray-500">No stories found</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {filteredPosts.map(post => (
+                              <PostCard key={post.id} post={post} onDelete={handleDeletePost} />
+                            ))}
+                          </div>
+                        )}
+                      </TabsContent>
+                      
+                      <TabsContent value="blog" className="space-y-0 mt-0">
+                        {filteredPosts.length === 0 ? (
+                          <div className="text-center py-10">
+                            <p className="text-gray-500">No blogs found</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {filteredPosts.map(post => (
+                              <PostCard key={post.id} post={post} onDelete={handleDeletePost} />
+                            ))}
+                          </div>
+                        )}
+                      </TabsContent>
+                      
+                      <TabsContent value="photo" className="space-y-0 mt-0">
+                        {filteredPosts.length === 0 ? (
+                          <div className="text-center py-10">
+                            <p className="text-gray-500">No photos found</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {filteredPosts.map(post => (
+                              <PostCard key={post.id} post={post} onDelete={handleDeletePost} />
+                            ))}
+                          </div>
+                        )}
+                      </TabsContent>
+                      
+                      <TabsContent value="event" className="space-y-0 mt-0">
+                        {filteredPosts.length === 0 ? (
+                          <div className="text-center py-10">
+                            <p className="text-gray-500">No events found</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {filteredPosts.map(post => (
+                              <PostCard key={post.id} post={post} onDelete={handleDeletePost} />
+                            ))}
+                          </div>
+                        )}
+                      </TabsContent>
+                    </>
+                  )}
                 </Tabs>
               </div>
             </div>
@@ -759,16 +753,22 @@ const Community: React.FC = () => {
                       <Calendar size={16} /> Upcoming Events
                     </h3>
                   </div>
-                  <div className="p-4 space-y-4">
-                    {upcomingEvents.slice(0, 3).map(event => (
-                      <EventCard key={event.id} event={event} />
-                    ))}
-                    {upcomingEvents.length > 3 && (
-                      <Button variant="ghost" className="w-full text-sm" size="sm">
-                        View All Events
-                      </Button>
-                    )}
-                  </div>
+                  {isLoading ? (
+                    <div className="flex justify-center py-10">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                  ) : (
+                    <div className="p-4 space-y-4">
+                      {upcomingEvents.slice(0, 3).map(event => (
+                        <EventCard key={event.id} event={event} />
+                      ))}
+                      {upcomingEvents.length > 3 && (
+                        <Button variant="ghost" className="w-full text-sm" size="sm">
+                          View All Events
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
               

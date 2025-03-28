@@ -2,8 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const communityRoutes = require("./routes/community");
 
 dotenv.config();
 
@@ -12,6 +14,9 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // MongoDB Connection
 mongoose
@@ -24,6 +29,7 @@ mongoose
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/community", communityRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

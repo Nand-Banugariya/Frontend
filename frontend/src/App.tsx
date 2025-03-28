@@ -11,6 +11,11 @@ import NotFound from "./pages/NotFound";
 import ExplorePage from "./pages/Explore";
 import HeritageDetail from "./pages/HeritageDetail";
 import Community from "./pages/Community";
+import { EditPostForm } from "@/components/EditPostForm";
+import VerifyEmail from "./pages/VerifyEmail";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -23,6 +28,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route 
             path="/dashboard" 
             element={
@@ -31,12 +40,13 @@ const App = () => (
               </ProtectedRoute>
             } 
           />
+          <Route path="/dashboard/edit-post/:postId" element={<EditPostForm />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="/about" element={<AboutUs />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/heritage/:id" element={<HeritageDetail />} />
           <Route path="/community" element={<Community />} />
-          <Route path="*" element={<AboutUs />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

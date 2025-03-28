@@ -9,6 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { CalendarIcon, Image as ImageIcon, MapPin, X } from 'lucide-react';
+import { communityService, NewPost } from '@/services/api';
+import { toast } from 'sonner';
 
 type ContentType = 'story' | 'blog' | 'photo' | 'event';
 
@@ -82,23 +84,22 @@ const CreatePostForm = () => {
     }
 
     try {
-      // Normally, we would upload images to a server and get URLs back
-      // For now, we'll just simulate a successful submission
+      // Create post data
+      const postData: NewPost = {
+        title: title.trim(),
+        content: content.trim(),
+        contentType,
+        location: location.trim() || undefined,
+        eventDate: date ? date.toISOString() : undefined,
+        images: images.length > 0 ? images : undefined
+      };
 
-      // Create form data (for a real implementation)
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('content', content);
-      formData.append('contentType', contentType);
-      if (location) formData.append('location', location);
-      if (date) formData.append('eventDate', date.toISOString());
-      images.forEach(image => {
-        formData.append('images', image);
-      });
-
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
+      // Submit post to API
+      await communityService.createPost(postData);
+      
+      // Show success message
+      toast.success('Your post has been published to the community!');
+      
       // Reset form on success
       setTitle('');
       setContent('');
@@ -112,8 +113,10 @@ const CreatePostForm = () => {
       setImagePreviewUrls([]);
       
       setSuccess(true);
-    } catch (err) {
-      setError('Failed to submit post. Please try again.');
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to submit post. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error('Error submitting post:', err);
     } finally {
       setSubmitting(false);
@@ -126,7 +129,7 @@ const CreatePostForm = () => {
       
       {success && (
         <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/30 rounded-lg text-green-700 dark:text-green-400">
-          Your post was submitted successfully! It will be reviewed before appearing on the community page.
+          Your post was published successfully! It is now visible on the community page.
         </div>
       )}
       
@@ -286,13 +289,9 @@ const CreatePostForm = () => {
           </div>
           
           {/* Submit Button */}
-          <div className="pt-4">
-            <Button 
-              type="submit" 
-              disabled={submitting}
-              className="min-w-[120px]"
-            >
-              {submitting ? 'Submitting...' : 'Submit'}
+          <div className="mt-8">
+            <Button type="submit" disabled={submitting} className="w-full md:w-auto">
+              {submitting ? 'Submitting...' : 'Publish Post'}
             </Button>
           </div>
         </div>

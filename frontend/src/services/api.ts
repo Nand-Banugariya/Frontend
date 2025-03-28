@@ -38,12 +38,14 @@ export interface LoginData {
 
 export interface AuthResponse {
   message: string;
-  token: string;
+  token?: string;
   user: {
     id: string;
     username: string;
     email: string;
+    isVerified: boolean;
   };
+  needsVerification?: boolean;
 }
 
 export interface UserProfile {
@@ -55,12 +57,37 @@ export interface UserProfile {
   contributions: string[];
   badges: string[];
   avatar?: string;
-  posts?: {
-    id: number;
-    title: string;
-    contentType: string;
-    createdAt: string;
-  }[];
+  posts?: Post[];
+  isVerified: boolean;
+}
+
+export interface Post {
+  _id?: string;  // MongoDB ID
+  id?: string;   // Frontend ID
+  title: string;
+  content: string;
+  contentType: 'story' | 'blog' | 'photo' | 'event';
+  author: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+  createdAt: string;
+  likes: number;
+  comments: number;
+  featured: boolean;
+  images?: string[];
+  location?: string;
+  eventDate?: string;
+}
+
+export interface NewPost {
+  title: string;
+  content: string;
+  contentType: 'story' | 'blog' | 'photo' | 'event';
+  location?: string;
+  eventDate?: string;
+  images?: File[];
 }
 
 export interface Event {
@@ -93,10 +120,7 @@ export interface Activity {
 export const authService = {
   register: async (username: string, email: string, password: string) => {
     const response = await api.post('/auth/register', { username, email, password });
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
+    // Note: No token is stored here - user must verify email first
     return response.data;
   },
 
@@ -112,6 +136,16 @@ export const authService = {
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+  },
+
+  verifyEmail: async (token: string) => {
+    const response = await api.get(`/auth/verify-email/${token}`);
+    return response.data;
+  },
+
+  resendVerification: async (email: string) => {
+    const response = await api.post('/auth/resend-verification', { email });
+    return response.data;
   },
 };
 
@@ -224,4 +258,142 @@ export const heritageService = {
       throw error;
     }
   }
+};
+
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'multipart/form-data',
+  };
+};
+
+// Community service
+export const communityService = {
+  // Get all posts with optional type filter
+  getPosts: async (type?: string) => {
+    try {
+      const response = await axios.get(`${API_URL}/community/posts`, {
+        params: { type },
+        headers: getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      throw error;
+    }
+  },
+
+  // Get a single post by ID
+  getPost: async (postId: string) => {
+    try {
+      const response = await axios.get(`${API_URL}/community/posts/${postId}`, {
+        headers: getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching post:", error);
+      throw error;
+    }
+  },
+
+  // Get featured posts
+  getFeaturedPosts: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/community/posts/featured`, {
+        headers: getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching featured posts:", error);
+      throw error;
+    }
+  },
+
+  // Get upcoming events
+  getUpcomingEvents: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/community/posts/events`, {
+        headers: getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching upcoming events:", error);
+      throw error;
+    }
+  },
+
+  // Create a new post
+  createPost: async (postData: FormData) => {
+    try {
+      const response = await axios.post(`${API_URL}/community/posts`, postData, {
+        headers: getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating post:", error);
+      throw error;
+    }
+  },
+
+  // Update a post
+  updatePost: async (postId: string, postData: FormData) => {
+    try {
+      const response = await axios.put(`${API_URL}/community/posts/${postId}`, postData, {
+        headers: getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error updating post:", error);
+      throw error;
+    }
+  },
+
+  // Delete a post
+  deletePost: async (postId: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      if (!postId) {
+        throw new Error('Post ID is required');
+      }
+
+      const response = await axios.delete(`${API_URL}/community/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("Error deleting post:", error);
+      if (error.response?.status === 401) {
+        throw new Error('Please log in to delete posts');
+      }
+      if (error.response?.status === 403) {
+        throw new Error('You are not authorized to delete this post');
+      }
+      if (error.response?.status === 404) {
+        throw new Error('Post not found');
+      }
+      throw error;
+    }
+  },
+
+  // Like/unlike a post
+  likePost: async (postId: string) => {
+    try {
+      const response = await axios.post(`${API_URL}/community/posts/${postId}/like`, {}, {
+        headers: getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      throw error;
+    }
+  },
 }; 

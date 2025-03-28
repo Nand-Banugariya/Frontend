@@ -21,6 +21,16 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: {
+    type: String,
+  },
+  verificationTokenExpires: {
+    type: Date,
+  },
   interests: [
     {
       type: String,
@@ -43,6 +53,17 @@ const userSchema = new mongoose.Schema({
     {
       type: String,
       trim: true,
+    },
+  ],
+  posts: [
+    {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+      title: String,
+      contentType: String,
+      createdAt: Date,
     },
   ],
   avatar: {

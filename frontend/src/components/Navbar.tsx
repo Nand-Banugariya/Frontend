@@ -130,11 +130,18 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link to="/">
-                <Button variant="outline" className="gap-2">
-                  Sign In
-                </Button>
-              </Link>
+              <div className="flex space-x-2">
+                <Link to="/signin">
+                  <Button variant="outline" className="gap-2">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button variant="default" className="gap-2">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
             )}
 
             {/* Mobile Menu Button */}
@@ -200,11 +207,18 @@ const Navbar = () => {
               />
             </div>
             {!isAuthenticated && (
-              <Link to="/#explore">
-                <Button variant="outline" className="w-full gap-2">
-                  Sign In
-                </Button>
-              </Link>
+              <div className="flex flex-col space-y-2">
+                <Link to="/signin">
+                  <Button variant="outline" className="w-full">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button variant="default" className="w-full">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
             )}
           </div>
         )}
